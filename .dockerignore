@@ -1,0 +1,28 @@
+*.pyc
+__pycache__
+.git/*
+.gitignore
+.vscode
+
+# DATA
+*/inputs/*
+*/outputs/*
+*.json
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.csv
+*.xlsx
+*.parquet
+*.zip
+*.txt
+
+# MODELS
+*/models/*
+*.h5
+*.t7
+*.pth
+
+#NOTEBOOKS
+*scratch.ipynb
