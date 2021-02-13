@@ -12,7 +12,7 @@ People's anthem allows its user to play sounds or music from a Raspberry pi when
 You will need:
 * A [raspberri pi](https://www.raspberrypi.org/)
 * Docker installed on your OS ([how to install](https://docs.docker.com/engine/install/debian/))
-* A raspberri pi webcam
+* A [raspberri pi webcam](https://www.raspberrypi.org/products/camera-module-v2/)
 * A speaker connected to your audio jack
 * A source of music (mp3 or a Spotify account)
 
@@ -20,8 +20,12 @@ You will need:
 ## Install
 
 
-## Run
+## Usage
+Once you have a trained `face recognition model` and that your `./code/config.py` is set up, you can run `people's anthem` with this command:
 
+```
+make run-peoples-anthem
+```
 
 
 ## License
