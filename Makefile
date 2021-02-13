@@ -22,6 +22,7 @@ run-video-recorder:
 
 CONTAINER_NAME=peoples_anthem
 CODE_PATH=/home/pi/projects/peoples-anthem
+DATASET_DIRECTORY=/app/data
 MODEL_PATH=/models
 USER_NAME=$(shell whoami)
 UID=$(shell id -u)
@@ -49,7 +50,11 @@ run-peoples-anthem-shell:
 
 .PHONY: run-peoples-anthem
 run-peoples-anthem:
-	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(MODEL_PATH):/models --volume $(CODE_PATH):/app $(IMAGE_TAG) bash -c "cd code && python3 main.py"
+	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(MODEL_PATH):/models --volume $(CODE_PATH):/app $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py"
+
+PHONY: run-record-faces
+run-record-faces:
+	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(MODEL_PATH):/models --volume $(CODE_PATH):/app $(IMAGE_TAG) bash -c "cd code && python3 build_dataset.py --path $(DATASET_DIRECTORY)"
 
 
 
