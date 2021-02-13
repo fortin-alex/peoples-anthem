@@ -5,8 +5,8 @@ from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import Normalizer
 
-from feature_extractor import FeatureExtractor
-from utils import compute_distance, serialize_model
+from utils.feature_extractor import FeatureExtractor
+from utils.model import compute_distance, serialize_model
 
 _DATASET_PATH = Path("/data/faces/mtcnn-detect-2.5/")
 _SAVE_TO_FILE = Path("/models/peoples-anthem/model.v1.pklz")
