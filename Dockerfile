@@ -42,38 +42,7 @@ RUN groupadd -g ${GID} ${GROUP} && useradd -u ${UID} -g ${GROUP} -s /bin/sh ${US
     usermod -a -G video root
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FROM base AS video-recorder
-
-RUN apt-get update -y && \
-    apt-get install -y git \
-    apt-utils \
-    php7.3-fpm \
-    nginx
-
-RUN adduser ${USER} sudo && \
-    echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && \
-    chmod 0440 /etc/sudoers.d/$USER
-
-USER ${USER}
-WORKDIR /home/${USER}
-
-
-RUN git clone https://github.com/billw2/pikrellcam.git && \
-    cd pikrellcam
-
-
-
-#RUN sudo /etc/init.d/php7.3-fpm start
-#RUN service nginx start
-EXPOSE 1234
-
-#CMD ["sudo", "/usr/sbin/nginx", "-g", "daemon off;"]
-#RUN service nginx start
-
-#CMD ["sudo", "/etc/init.d/php7.3-fpm", "start", "&&", "sudo", "service", "nginx", "start", "&&", "sleep", "30"]
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FROM base AS model-trainer
+FROM base AS peoples-anthem
 
 WORKDIR /app
 
@@ -95,7 +64,7 @@ RUN curl --insecure https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
 
 RUN python3 -m pip install pipenv==2020.11.15 scipy==1.5.4
 
-# PIL and opencv dependencies
+# Installing PIL and opencv dependencies
 # https://pillow.readthedocs.io/en/stable/installation.html
 # https://blog.piwheels.org/new-opencv-builds/
 RUN apt-get install -y libjpeg-dev \
@@ -149,17 +118,3 @@ RUN python3 -m pipenv install --dev --system --deploy
 RUN rm -rf /home/${USER}/wheels/ Pipfile Pipfile.lock
 
 USER ${USER}
-
-#ARG uid=1000
-#ARG user=pi
-#RUN useradd -M --uid ${uid} --user-group ${user} --groups uucp \
-#    && echo '${user} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/${user}} \
-#    && echo 'Defaults exempt_group+=${user}' >> /etc/sudoers.d/${user} \
-#    && chmod a=r,o= /etc/sudoers.d/${user}
-
-#RUN usermod -a -G video ${user}
-
-#USER ${user}
-
-
-
