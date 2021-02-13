@@ -3,6 +3,7 @@
 # DATA
 */inputs/*
 */outputs/*
+*/data/*
 *.json
 *.jpg
 *.png
