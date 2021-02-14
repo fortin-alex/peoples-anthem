@@ -51,7 +51,7 @@ train-model: mkdir-model-path-if-not-exists
 
 .PHONY: run-peoples-anthem
 run-peoples-anthem: check-if-model-is-trained mkdir-model-path-if-not-exists
-	docker run -it --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py --model-filepath $(CONTAINER_MODEL_FILEPATH)"
+	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py --model-filepath $(CONTAINER_MODEL_FILEPATH)"
 
 .PHONY: get-peoples-anthem-shell
 get-peoples-anthem-shell: mkdir-model-path-if-not-exists
