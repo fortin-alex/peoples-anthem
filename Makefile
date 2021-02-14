@@ -16,10 +16,19 @@ endif
 # LOCAL_CODE_PATH points to where this repo is cloned locally
 # LOCAL_MODEL_PATH points to where your trained face recognition model is saved locally
 LOCAL_CODE_PATH=/home/$(USER_NAME)/projects/peoples-anthem
-LOCAL_MODEL_PATH=/models
+LOCAL_MODEL_PATH=$(LOCAL_CODE_PATH)/models
 
 # Where the detected faces will be saved when building the dataset for training the face recognition algorithm
-CONTAINER_DATASET_DIRECTORY=/app/data
+CONTAINER_CODE_PATH=/app
+CONTAINER_DATASET_DIRECTORY=$(CONTAINER_CODE_PATH)/data
+
+CONTAINER_MODEL_PATH=$(CONTAINER_CODE_PATH)/models
+CONTAINER_MODEL_FILENAME=model.vdirections.pklz
+CONTAINER_MODEL_FILEPATH=$(CONTAINER_MODEL_PATH)/$(CONTAINER_MODEL_FILENAME)
+
+.PHONY: mkdir-model-path-if-not-exists
+mkdir-model-path-if-not-exists:
+	if [ ! -d $(LOCAL_MODEL_PATH) ]; then mkdir -p $(LOCAL_MODEL_PATH); fi
 
 .PHONY: build-peoples-anthem
 build-peoples-anthem:
@@ -29,13 +38,17 @@ build-peoples-anthem:
 # As per: https://stackoverflow.com/questions/28985714/run-apps-using-audio-in-a-docker-container
 # AS per: https://www.losant.com/blog/how-to-access-the-raspberry-pi-camera-in-docker
 PHONY: run-record-faces
-run-record-faces:
-	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):/models --volume $(LOCAL_CODE_PATH):/app $(IMAGE_TAG) bash -c "cd code && python3 build_dataset.py --path $(CONTAINER_DATASET_DIRECTORY)"
+run-record-faces: mkdir-model-path-if-not-exists
+	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):/models --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 build_dataset.py --path $(CONTAINER_DATASET_DIRECTORY)"
+
+PHONY: train-model
+train-model: mkdir-model-path-if-not-exists
+	docker run -it --rm --name $(CONTAINER_NAME) --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) /bin/bash -c "cd code && python3 train_face_recognition.py --input-path $(CONTAINER_DATASET_DIRECTORY) --output-filepath $(CONTAINER_MODEL_FILEPATH)"
 
 .PHONY: run-peoples-anthem
-run-peoples-anthem:
-	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):/models --volume $(LOCAL_CODE_PATH):/app $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py"
+run-peoples-anthem: mkdir-model-path-if-not-exists
+	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py"
 
 .PHONY: get-peoples-anthem-shell
-run-peoples-anthem-shell:
-	docker run -it --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):/models --volume $(LOCAL_CODE_PATH):/app $(IMAGE_TAG)
+get-peoples-anthem-shell: mkdir-model-path-if-not-exists
+	docker run -it --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) /bin/bash

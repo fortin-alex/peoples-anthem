@@ -40,7 +40,7 @@ def serialize_model(
     d = dict()
     metadata = dict()
 
-    model_size_mb = sys.getsizeof(pickle.dumps(model)) / _BYTES_TO_MB
+    model_size_mb = format(sys.getsizeof(pickle.dumps(model)) / _BYTES_TO_MB, ".4f")
     metadata["model_size_mb"] = model_size_mb
     metadata["parameters"] = parameters
     metadata["performance"] = performance
@@ -49,7 +49,7 @@ def serialize_model(
     d["model"] = model
     d["metadata"] = metadata
 
-    Path(output_path).parents[0].mkdir(exist_ok=True)
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(d, str(output_path), compress=("gzip", 3))
 
     return output_path
