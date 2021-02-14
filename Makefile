@@ -30,6 +30,10 @@ CONTAINER_MODEL_FILEPATH=$(CONTAINER_MODEL_PATH)/$(CONTAINER_MODEL_FILENAME)
 mkdir-model-path-if-not-exists:
 	if [ ! -d $(LOCAL_MODEL_PATH) ]; then mkdir -p $(LOCAL_MODEL_PATH); fi
 
+.PHONY: check-if-model-is-trained
+check-if-model-is-trained:
+	if [ ! -f $(LOCAL_MODEL_PATH)/$(CONTAINER_MODEL_FILENAME) ]; then echo "Your model: $(LOCAL_CODE_PATH)/$(CONTAINER_MODEL_FILENAME) does not exist locally"; false ; fi
+
 .PHONY: build-peoples-anthem
 build-peoples-anthem:
 	DOCKER_BUILDKIT=1 docker build --target peoples-anthem -t $(IMAGE_TAG):latest .
@@ -46,8 +50,8 @@ train-model: mkdir-model-path-if-not-exists
 	docker run -it --rm --name $(CONTAINER_NAME) --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) /bin/bash -c "cd code && python3 train_face_recognition.py --input-path $(CONTAINER_DATASET_DIRECTORY) --output-filepath $(CONTAINER_MODEL_FILEPATH)"
 
 .PHONY: run-peoples-anthem
-run-peoples-anthem: mkdir-model-path-if-not-exists
-	docker run -d --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py"
+run-peoples-anthem: check-if-model-is-trained mkdir-model-path-if-not-exists
+	docker run -it --rm --privileged --name $(CONTAINER_NAME) --env XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR} --env LD_LIBRARY_PATH=/opt/vc/lib --device /dev/vchiq --device /dev/snd --device /dev/shm --device /etc/machine-id --volume /run/user:/run/user --volume /var/lib/dbus:/var/lib/dbus --volume ~/models-cache:/home/${USER_NAME}/models-cache --volume ~/.config/pulse:/home/${USER_NAME}/.config/pulse --volume /opt/vc:/opt/vc --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(LOCAL_MODEL_PATH):$(CONTAINER_MODEL_PATH) --volume $(LOCAL_CODE_PATH):$(CONTAINER_CODE_PATH) $(IMAGE_TAG) bash -c "cd code && python3 recognize_and_play_music.py --model-filepath $(CONTAINER_MODEL_FILEPATH)"
 
 .PHONY: get-peoples-anthem-shell
 get-peoples-anthem-shell: mkdir-model-path-if-not-exists
