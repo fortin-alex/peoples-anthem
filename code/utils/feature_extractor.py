@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Tuple
 
@@ -5,8 +6,9 @@ import numpy as np
 import torch
 from facenet_pytorch import InceptionResnetV1, fixed_image_standardization
 from PIL import Image
-from torch.utils.mobile_optimizer import optimize_for_mobile
 from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
 
 
 class FeatureExtractor:
@@ -19,6 +21,13 @@ class FeatureExtractor:
         ----------
         arr : np.array
             Batch of images of faces extracted using facenet_pytorch.MTCNN
+
+        batch_size: int
+            Batch size used for transforming images into embeddings, by default 4.
+
+        pre_process: bool
+            Whether to pre_process the images or not. Rule of thumb, if you loaded your images from disk and these
+            images looked normal, you should opt for pre-processing the imag. By default False.
 
         Returns
         -------
@@ -34,7 +43,7 @@ class FeatureExtractor:
             T = T.permute(0, 3, 1, 2)
 
         if pre_process:
-            print("Pre-processing images...")
+            logger.info("Pre-processing images...")
             T = fixed_image_standardization(T)
 
         n_batches = T.shape[0] // batch_size + 1
@@ -51,54 +60,36 @@ class FeatureExtractor:
 
     @classmethod
     def prepare_data(cls, path: str, **kwargs) -> Tuple[np.array, np.array]:
+        """
+        Method that 1. gets the list of labels (for example, the name of the persons to recognize) and 2. extracts the
+        `facenet` embeddings from the image from disk.
+
+        Parameters
+        ----------
+        path : str
+            Directory with sub-directories. Each sub-directories contains `.png` of a single person to recognize.
+
+        Returns
+        -------
+        Tuple[np.array, np.array]
+            The embeddings and their corresponding labels
+
+        Notes
+        -----
+        A good practice is to add an extra directories with miscellaneous images, so that the model learns to recognize
+        "other" as its distinct category.
+        """
         path = Path(path)
 
-        labels = [x.name for x in path.iterdir()]
+        labels = list(set([x.name for x in path.iterdir()]))
+        # Get a dictionary with 1 key per labels and an array of all images correspondings to that labels as its values
         d = {k: np.array(list(map(np.array, map(Image.open, path.joinpath(k).glob("*.png"))))) for k in labels}
 
+        # Create a single `numpy.array` with all images and get a corresponding array with the labels repeated
+        # appropriately.
         X = np.vstack([x for x in d.values()])
         y = [item for item, count in zip(d.keys(), [x.shape[0] for x in d.values()]) for i in range(count)]
 
         X = cls.get_embeddings(arr=X, **kwargs)
 
         return X, y
-
-
-if __name__ == "__main__":
-    import random
-
-    import pandas as pd
-    from sklearn import svm
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import Normalizer, StandardScaler
-
-    path = Path("/data/faces/mtcnn-detect-2.5/")
-
-    X_train, y_train = FeatureExtractor.prepare_data(path.joinpath("train"), pre_process=True, batch_size=32)
-    X_test, y_test = FeatureExtractor.prepare_data(path.joinpath("test"), pre_process=True, batch_size=32)
-
-    T = torch.Tensor(X_train)
-    dists = [[(e1 - e2).norm().item() for e2 in T] for e1 in T]
-    df = pd.DataFrame(dists, columns=y_train, index=y_train)
-
-    idx_lst = random.sample(range(X_train.shape[0]), k=15)
-    print(df.iloc[idx_lst, idx_lst], "\n")
-
-    params = dict(
-        nu=0.30,
-        kernel="linear",  # ‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’
-        degree=3,  # for kernel=="poly" only
-        class_weight="balanced",  # None, "balanced"
-        decision_function_shape="ovr",
-        max_iter=-1,
-        verbose=0,
-    )
-
-    scaler = Normalizer(norm="l2")  # StandardScaler()
-    clf = svm.NuSVC(**params)
-    pipe = make_pipeline(scaler, clf)
-
-    pipe.fit(X=X_train, y=y_train)
-    d = dict(train=pipe.score(X=X_train, y=y_train), test=pipe.score(X=X_test, y=y_test))
-    print(params)
-    print(d)
