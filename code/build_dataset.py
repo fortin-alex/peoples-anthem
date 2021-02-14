@@ -11,13 +11,19 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-p",
         "--path",
         type=str,
+        required=True,
         help="Directory where to save the images of detected faces used for training the face recognition model",
+    )
+    parser.add_argument(
+        "--model-filepath",
+        type=str,
+        required=True,
+        help="Filepath to the model to use for face recognition",
     )
 
     args = parser.parse_args()
 
-    peoples_anthem = PeoplesAnthem()
+    peoples_anthem = PeoplesAnthem(model_path=args.model_filepath)
     peoples_anthem.detect_and_save_image(path=args.path)

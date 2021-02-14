@@ -23,21 +23,30 @@ N_TRACKS = 2  # Play `N_TRACKS` from your playlist
 N_CONSECUTIVE_DETECTION = 3  # Number of face to detect before identifying
 BRIGHTNESS_FACTOR = 2.5  # Increase the brightness of each picture before sending it to `FrameExtractor.get_face_mtcnn`
 
-# Model for face recognition from facenet embeddings
-FACE_RECOGNITION_MODEL_PATH = Path("/models/peoples-anthem/model.v1.pklz")
-
 # Model for face detection
 FACE_DETECTION_MODEL_PATH = Path(f"/home/{getpass.getuser()}/models-cache/face-cascade/")
 FACE_DETECTION_MODEL_FILEPATH = FACE_DETECTION_MODEL_PATH.joinpath("haarcascade_frontalface_default.xml")
 
 # SETUP FACE DETECTION
 face_cascade = cv2.CascadeClassifier(str(FACE_DETECTION_MODEL_FILEPATH))
-face_recognition_model = joblib.load(str(FACE_RECOGNITION_MODEL_PATH)).get("model")
 
 
 class PeoplesAnthem(object):
-    def __init__(self):
+    def __init__(self, model_path: str):
+        """
+        Class used for either of 2 reasons:
+          - Extracting faces and saving them to disk for building a face dataset
+          - Using a face recognition model to recognize people and play their music
+
+        Parameters
+        ----------
+        model_path : str
+            Filepath to the model to use for face recognition
+        """
         self.counter = 0
+        self.model_path = Path(model_path)
+
+        self.face_recognition_model = joblib.load(self.model_path).get("model")
 
     def check_for_faces(self, cap: cv2.VideoCapture) -> Tuple[Image.Image, np.array]:
         """
@@ -163,7 +172,7 @@ class PeoplesAnthem(object):
             if isinstance(extracted_faces, torch.Tensor):
 
                 face_emb = FeatureExtractor.get_embeddings(arr=extracted_faces, pre_process=True)
-                face_id = face_recognition_model.predict(face_emb)[0]
+                face_id = self.face_recognition_model.predict(face_emb)[0]
                 logger.info(f"Detected: {face_id.title()}.")
 
                 # If detecting noise, do nothing. Else, send face_id to music player.
