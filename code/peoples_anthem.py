@@ -34,6 +34,9 @@ face_cascade = cv2.CascadeClassifier(str(FACE_DETECTION_MODEL_FILEPATH))
 class PeoplesAnthem(object):
     def __init__(self, model_path: str):
         """
+        Class used for either of 2 reasons:
+          - Extracting faces and saving them to disk for building a face dataset
+          - Using a face recognition model to recognize people and play their music
 
         Parameters
         ----------
