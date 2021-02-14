@@ -104,9 +104,12 @@ RUN apt-get install -y libjpeg-dev \
 # https://github.com/timesler/facenet-pytorch/blob/1d75625351cfa8f17591f271f2151ed9cb959f32/models/inception_resnet_v1.py#L333
 ENV XDG_CACHE_HOME=/torch_models/.cache
 
+# Downloading haarcascade face detection .xml
 # Downloading torch and torchvision .whl compiled for pi4
-RUN mkdir --parents /home/${USER}/wheels && \
+RUN mkdir --parents /home/${USER}/models-cache/face-cascade && \
+    mkdir --parents /home/${USER}/wheels && \
     mkdir --parents ${XDG_CACHE_HOME}/torch/checkpoints && \
+    wget https://github.com/opencv/opencv/raw/master/data/haarcascades/haarcascade_frontalface_default.xml -O /home/${USER}/models-cache/face-cascade/haarcascade_frontalface_default.xml && \
     wget https://www.dropbox.com/s/015k4qyoofi6ld5/torch-1.6.0a0%2Bb31f58d-cp37-cp37m-linux_armv7l.whl?dl=0 -O /home/${USER}/wheels/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl && \
     wget https://www.dropbox.com/s/mmm5b0ovehujfz0/torchvision-0.7.0a0%2B78ed10c-cp37-cp37m-linux_armv7l.whl?dl=0 -O /home/${USER}/wheels/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl && \
     wget https://github.com/timesler/facenet-pytorch/releases/download/v2.2.9/20180402-114759-vggface2.pt -O ${XDG_CACHE_HOME}/torch/checkpoints/20180402-114759-vggface2.pt
