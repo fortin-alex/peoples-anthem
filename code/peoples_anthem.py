@@ -23,12 +23,10 @@ N_TRACKS = 2  # Play `N_TRACKS` from your playlist
 N_CONSECUTIVE_DETECTION = 3  # Number of face to detect before identifying
 BRIGHTNESS_FACTOR = 2.5  # Increase the brightness of each picture before sending it to `FrameExtractor.get_face_mtcnn`
 
-# Model for face detection
-FACE_DETECTION_MODEL_PATH = Path(f"/home/{getpass.getuser()}/models-cache/face-cascade/")
-FACE_DETECTION_MODEL_FILEPATH = FACE_DETECTION_MODEL_PATH.joinpath("haarcascade_frontalface_default.xml")
-
 # SETUP FACE DETECTION
-face_cascade = cv2.CascadeClassifier(str(FACE_DETECTION_MODEL_FILEPATH))
+# Note: this path is hardcoded in the Dockerfile
+FACE_DETECTION_MODEL_FILEPATH = "/home/pi/models-cache/face-cascade/haarcascade_frontalface_default.xml"
+face_cascade = cv2.CascadeClassifier(FACE_DETECTION_MODEL_FILEPATH)
 
 
 class PeoplesAnthem(object):
