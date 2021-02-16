@@ -15,7 +15,7 @@ endif
 # LOCAL_CODE_PATH will be mounted in the container at /app
 # LOCAL_CODE_PATH points to where this repo is cloned locally
 # LOCAL_MODEL_PATH points to where your trained face recognition model is saved locally
-LOCAL_CODE_PATH=/home/$(USER_NAME)/projects/peoples-anthem
+LOCAL_CODE_PATH=$(shell pwd)
 LOCAL_MODEL_PATH=$(LOCAL_CODE_PATH)/models
 
 # Where the detected faces will be saved when building the dataset for training the face recognition algorithm
