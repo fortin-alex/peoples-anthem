@@ -2,15 +2,15 @@
 
 ![peoples-anthem-logo](./assets/logo.png "People's anthem")
 
-A project using face recognition and a raspberry pi's webcam to identify a person and play their favorite music
+A project using face recognition and a raspberry pi's camera to identify a person and play their favorite music
 
-People's anthem allows its user to play sounds or music from a Raspberry pi when a person walks in front of a webcam attached to the raspberri pi.
+People's anthem allows its user to play sounds or music from a Raspberry pi when a person walks in front of a camera attached to the raspberri pi.
 
 ## Requirements
 You will need:
 * A [raspberri pi](https://www.raspberrypi.org/) (rpi)
 * Docker installed on your OS ([how to install](https://docs.docker.com/engine/install/debian/))
-* A [raspberri pi webcam](https://www.raspberrypi.org/products/camera-module-v2/)
+* A [raspberri pi camera](https://www.raspberrypi.org/products/camera-module-v2/)
 * A speaker plugged-in to the rpi via the audio jack
 * A source of music (mp3 or a Spotify account) (More info [here](doc/setting-up-spotify.md))
 
