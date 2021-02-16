@@ -1,8 +1,6 @@
-# Peoples Anthem
+# People's Anthem
 
-<div align="center">
-  <img src="https://www.tensorflow.org/images/tf_logo_social.png">
-</div>
+![peoples-anthem-logo](./assets/logo.png "People's anthem")
 
 A project using face recognition and a raspberry pi's webcam to identify a person and play their favorite music
 
