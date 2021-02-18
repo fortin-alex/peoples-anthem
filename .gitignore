@@ -165,3 +165,4 @@ dmypy.json
 cython_debug/
 
 !assets/*.png
+!assets/*/*.png
