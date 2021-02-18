@@ -4,7 +4,7 @@
 
 A project using facial recognition and a raspberry pi's camera to identify a person and play their favorite music.
 
-The project provides an easy to setup configuration, with Docker -- taking care of all dependencies, including pre-compiled `torch` wheels optimized for the raspberry py.
+The project provides an easy to setup configuration, with Docker -- taking care of all dependencies, including pre-compiled `torch` wheels optimized for the raspberry pi.
 
 ## Requirements
 
