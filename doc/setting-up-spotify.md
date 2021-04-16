@@ -13,7 +13,7 @@ Start by opening the file `peoples-anthem/conf/config.yml`.
 This file is used in `peoples-anthem/code/peoples_anthem.py` and its information is passed to the Spotify API's via the [Spotipy](https://spotipy.readthedocs.io/en/2.16.1/) python package.
 
 ## 2. How to get your Spotify `client_id`
-In this section, we are going to get the `client_id` for each person that we will be recognizing.
+In this section, we are going to get the `client_id` for each person that we will be recognized. The `client_id` is essentially the same as your username but it looks like a random string of characters.
 
 In the example below, `peoples-anthem/conf/config.yml` is configured to work for 2 people: `alice` and `bob`.
 
@@ -78,7 +78,7 @@ PLAYLIST:
 ![spotify-uri-hint](../assets/spotify-setup/spotify-uri.png "Spotify URI")
 
 
-In this example, the Spotify playlist is this one: `spotify:playlist:37i9dQZF1DZ06evO24IA7u`
+In this example, the Spotify URI for this playlist is this one: `spotify:playlist:37i9dQZF1DZ06evO24IA7u`
 
 ### 4.3 In `peoples-anthem/conf/config.yml`, replace `spotify:playlist:alice` by the `Spotify URI`
 
