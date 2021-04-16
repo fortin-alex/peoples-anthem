@@ -9,8 +9,6 @@ import spotipy
 import vlc
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from config import PLAYLIST, SECRET
-
 logger = logging.getLogger(__name__)
 
 
@@ -125,4 +123,18 @@ class LocalPlayer:
 
 
 if __name__ == "__main__":
-    SpotifyPlayer.get_and_play_tracks(secret_dict=SECRET, playlist_uri_dict=PLAYLIST, user="alex", n_tracks=2)
+    from pathlib import Path
+
+    import yaml
+
+    root_path = Path(__file__).parents[2]
+    config_path = root_path.joinpath("conf/config.yml")
+
+    with open(config_path) as f:
+        conf = yaml.safe_load(f)
+
+    secret = conf.get("SECRET", None)
+    playlist = conf.get("PLAYLIST", None)
+    user = list(playlist.keys())[0]
+
+    SpotifyPlayer.get_and_play_tracks(secret_dict=secret, playlist_uri_dict=playlist, user=user, n_tracks=2)

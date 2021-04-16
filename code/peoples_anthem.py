@@ -9,9 +9,9 @@ import cv2
 import joblib
 import numpy as np
 import torch
+import yaml
 from PIL import Image
 
-from config import PLAYLIST, SECRET
 from utils.feature_extractor import FeatureExtractor
 from utils.frame_extractor import FrameExtractor
 from utils.players import SpotifyPlayer
@@ -27,6 +27,12 @@ BRIGHTNESS_FACTOR = 2.5  # Increase the brightness of each picture before sendin
 # Note: this path is hardcoded in the Dockerfile
 FACE_DETECTION_MODEL_FILEPATH = "/home/pi/models-cache/face-cascade/haarcascade_frontalface_default.xml"
 face_cascade = cv2.CascadeClassifier(FACE_DETECTION_MODEL_FILEPATH)
+
+# Loading pointer to Spotify playlists
+root_path = Path(__file__).parents[1]
+config_path = root_path.joinpath("conf/config.yml")
+with open(config_path) as f:
+    conf = yaml.safe_load(f)
 
 
 class PeoplesAnthem(object):
@@ -177,8 +183,10 @@ class PeoplesAnthem(object):
                 if face_id.lower() == "misc":
                     continue
                 else:
+                    secret = conf.get("SECRET", None)
+                    playlist = conf.get("PLAYLIST", None)
                     SpotifyPlayer.get_and_play_tracks(
-                        secret_dict=SECRET, playlist_uri_dict=PLAYLIST, user=face_id, n_tracks=N_TRACKS
+                        secret_dict=secret, playlist_uri_dict=playlist, user=face_id, n_tracks=N_TRACKS
                     )
 
                 cap = self.reset_video_capture(cap=cap)
