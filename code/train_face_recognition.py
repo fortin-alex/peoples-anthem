@@ -5,7 +5,6 @@ import pandas as pd
 from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import Normalizer
-
 from utils.feature_extractor import FeatureExtractor
 from utils.model import serialize_model
 
