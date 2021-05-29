@@ -1,3 +1,8 @@
+#===================================
+# Checks: format, types, lint, tests
+#===================================
+SOURCE_DIRECTORIES = code
+
 CONTAINER_NAME=peoples_anthem
 IMAGE_TAG=peoples-anthem
 
@@ -33,6 +38,20 @@ mkdir-model-path-if-not-exists:
 .PHONY: check-if-model-is-trained
 check-if-model-is-trained:
 	if [ ! -f $(LOCAL_MODEL_PATH)/$(CONTAINER_MODEL_FILENAME) ]; then echo "Your model: $(LOCAL_CODE_PATH)/$(CONTAINER_MODEL_FILENAME) does not exist locally"; false ; fi
+
+
+.PHONY: check-format
+check-format:
+	@pipenv run isort --check $(SOURCE_DIRECTORIES) \
+	&& pipenv run black --line-length 120 --check $(SOURCE_DIRECTORIES) \
+	|| (echo "Some files have formatting issues. Run \"make format\" to fix them" \
+	&& false)
+
+.PHONY: format
+format:
+	pipenv run isort $(SOURCE_DIRECTORIES)
+	pipenv run black --line-length 120 $(SOURCE_DIRECTORIES)
+
 
 .PHONY: build-peoples-anthem
 build-peoples-anthem:
