@@ -34,8 +34,8 @@ class FeatureExtractor:
         np.array
             InceptionRestnetV1 embeddings as trained on VGGFace2
         """
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        resnet = InceptionResnetV1(pretrained="vggface2").eval().to(device)
 
         T = torch.Tensor(arr).to(device)
 

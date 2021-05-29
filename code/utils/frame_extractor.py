@@ -8,7 +8,7 @@ import torch
 from facenet_pytorch import MTCNN
 from PIL import Image, ImageEnhance
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 mtcnn_params = dict(
     image_size=160,
@@ -303,7 +303,7 @@ class FrameExtractor(object):
         videos_list = Path(videos_path).glob("*.mp4")
         output_list = [str(x) for x in Path(output_path).glob("*.png")]
 
-        processed_videos_list = [x for x in videos_list if str(x.stem) in '\t'.join(output_list)]
+        processed_videos_list = [x for x in videos_list if str(x.stem) in "\t".join(output_list)]
 
         n_vid_to_delete = len(processed_videos_list)
         plural = "s" if n_vid_to_delete > 1 else ""

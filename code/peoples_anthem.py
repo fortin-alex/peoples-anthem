@@ -11,7 +11,6 @@ import numpy as np
 import torch
 import yaml
 from PIL import Image
-
 from utils.feature_extractor import FeatureExtractor
 from utils.frame_extractor import FrameExtractor
 from utils.players import SpotifyPlayer
