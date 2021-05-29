@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 jupyter = "==1.0.0"
 isort = "==5.6.4"
+rope = "==0.19.0"
+black = "==21.5b1"
+pytest = "==6.2.4"
 
 [packages]
 cython = "==0.29.21"
