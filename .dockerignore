@@ -17,6 +17,7 @@ __pycache__
 *.parquet
 *.zip
 *.txt
+*.whl
 
 # MODELS
 */models/*
