@@ -15,8 +15,8 @@ cython = "==0.29.21"
 numpy = "==1.19.3"
 picamerab = {version = "==1.13b1", platform_release = "== '5.4.83-v7l+'"}
 pillow = "==8.0.1"
-torch = {path = "/home/pi/wheels/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl", platform_release = "== '5.4.83-v7l+'"}
-torchvision = {path = "/home/pi/wheels/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl", platform_release = "== '5.4.83-v7l+'"}
+torch = {path = "./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl", platform_release = "== '5.4.83-v7l+'"}
+torchvision = {path = "./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl", platform_release = "== '5.4.83-v7l+'"}
 scikit-build = "==0.11.1"
 pip = "*"
 opencv-contrib-python = {file = "https://www.piwheels.org/simple/opencv-contrib-python/opencv_contrib_python-4.1.0.25-cp37-cp37m-linux_armv7l.whl", platform_release = "== '5.4.83-v7l+'"}

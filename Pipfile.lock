@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7e504ddc02efc5188b84c273859d3cc52d83db8ab4fe8ffe056a689e1c8a66f1"
+            "sha256": "2bad6ccd0e632054224a154a95949fdf08083ff597ef8da431df2b11063f89eb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -452,7 +452,7 @@
                 "sha256:1665c41422121326c592d5590d9516d1c4dc7cbde58154cb1532332cab162c6b"
             ],
             "markers": "platform_release == '5.4.83-v7l+'",
-            "path": "/home/pi/wheels/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl",
+            "path": "./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl",
             "version": "==1.6.0a0+b31f58d"
         },
         "torchvision": {
@@ -460,7 +460,7 @@
                 "sha256:5c5e3bf404a1491f207d5767df8edc8c2095837a662ae23fccee64b4e52a4b86"
             ],
             "markers": "platform_release == '5.4.83-v7l+'",
-            "path": "/home/pi/wheels/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl",
+            "path": "./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl",
             "version": "==0.7.0a0+78ed10c"
         },
         "tqdm": {
@@ -657,11 +657,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:960d52ba7c21377c990412aca380bf3642d734c2eaab78a2c39319f67c6a5786",
-                "sha256:e592faad8de1bda9fe920cf41e15261e7131bcf266c30306eec00e8e225c1dd5"
+                "sha256:833b26fb89d5de469b24a390e9df088d4e52e4ba33b01dc5e0e4f41b81a16c00",
+                "sha256:b142cc1dd1342f31ff04bb7d022492b09920cb64fed867cd3ea6f80fe3ebd139"
             ],
             "markers": "python_version < '3.8' and python_version < '3.8'",
-            "version": "==4.4.0"
+            "version": "==4.5.0"
         },
         "iniconfig": {
             "hashes": [
@@ -680,11 +680,11 @@
         },
         "ipython": {
             "hashes": [
-                "sha256:a171caa3d3d4c819a1c0742e3abecfd5a2b8ab525ca1c9f114b40b76b0679ab1",
-                "sha256:f86788eef439891438af3498525094cc2acbdbea4f2aa2f8895782d4ff471341"
+                "sha256:9bc24a99f5d19721fb8a2d1408908e9c0520a17fff2233ffe82620847f17f1b6",
+                "sha256:d513e93327cf8657d6467c81f1f894adc125334ffe0e4ddd1abbb1c78d828703"
             ],
             "markers": "python_version >= '3.3'",
-            "version": "==7.24.0"
+            "version": "==7.24.1"
         },
         "ipython-genutils": {
             "hashes": [
