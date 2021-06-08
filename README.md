@@ -1,6 +1,7 @@
 # People's Anthem
-
 ![peoples-anthem-logo](./assets/logo.png "People's anthem")
+
+[![alexantoinefortin](https://circleci.com/gh/alexantoinefortin/peoples-anthem.svg?style=shield)](https://app.circleci.com/pipelines/github/alexantoinefortin/peoples-anthem)
 
 A project using facial recognition and a raspberry pi's camera to identify a person and play their favorite music.
 
