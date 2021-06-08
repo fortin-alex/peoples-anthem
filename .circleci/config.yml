@@ -17,16 +17,15 @@ jobs:
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: buildpipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
             touch ./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl
             touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
-            python -c "import platform; print(platform.release())"
             pipenv install --skip-lock
       - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: buildpipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
             - "/usr/local/bin"
@@ -36,7 +35,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: pylinter-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
@@ -44,7 +43,7 @@ jobs:
             touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
             pipenv install --skip-lock
       - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: pylinter-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
             - "/usr/local/bin"
