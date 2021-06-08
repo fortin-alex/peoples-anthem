@@ -23,7 +23,7 @@ jobs:
             sudo pip install pipenv
             touch ./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl
             touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
-            pipenv install --skip-lock
+            pipenv install --dev --skip-lock
       - save_cache:
           key: buildpipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
@@ -41,7 +41,7 @@ jobs:
             sudo pip install pipenv
             touch ./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl
             touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
-            pipenv install --skip-lock
+            pipenv install --dev --skip-lock
       - save_cache:
           key: pylinter-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
