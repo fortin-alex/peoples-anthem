@@ -6,68 +6,56 @@ executors:
     docker:
       - image: circleci/python:3.7.3
 
-commands:
-  verify_docker_works:
-    description: Verify docker works
-    steps:
-      - run:
-          name: Verify Docker Works
-          command: |
-            docker --version
-
 jobs:
-  run-build-tests:
+  build:
     executor: base-executor
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
       - checkout
-      - verify_docker_works
       - run: git submodule sync
       - run: git submodule init
       - run: git submodule update --recursive
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: buildpipenv-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
-          name: build CPU image
           command: |
-            docker build --target peoples-anthem  -t pa-image:cpu .
-            docker create -v /app --name pa_app pa-image:cpu /bin/true
-            docker cp ./ pa_app:/app
-  # docker run --rm -it --volumes-from pa_app --entrypoint bash pa-image:cpu -c 'pytest ./tests'
+            sudo pip install pipenv
+            touch ./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl
+            touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
+            pipenv install --dev --skip-lock
+      - save_cache:
+          key: buildpipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.7/site-packages"
   py-linter:
     executor: base-executor
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: false
       - checkout
-      - verify_docker_works
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: pylinter-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          command: |
+            sudo pip install pipenv
+            touch ./whl/torch-1.6.0a0+b31f58d-cp37-cp37m-linux_armv7l.whl
+            touch ./whl/torchvision-0.7.0a0+78ed10c-cp37-cp37m-linux_armv7l.whl
+            pipenv install --dev --skip-lock
+      - save_cache:
+          key: pylinter-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.7/site-packages"
       - run:
           name: Run python code linter
           command: |
-            docker create -v /apps --name pa_app alpine/flake8:3.7.3 /bin/true
-            docker cp ./ pa_app:/apps
-            MODIFIED_PY_FILES=$(git diff --name-only --diff-filter=ACMTUXB origin/master...${CIRCLE_BRANCH} -- '*.py')
-            if [ "$MODIFIED_PY_FILES" != "" ]; then
-                echo "Running Flake8..."
-                declare -a arr=($MODIFIED_PY_FILES)
-                for i in "${arr[@]}"
-                do
-                    echo "checking $i"
-                    if cat "$i" | grep "^# jupyter:$" && cat "$i" |grep "^#   jupytext:$"; then
-                        echo "jupytext file, skipping!"
-                        continue
-                    fi
-                    if ! [ -x "$(command -v flake8)" ]; then
-                        docker run --rm -t -v $(pwd):/apps alpine/flake8:3.7.3  --max-line-length=120 --ignore=E731,W503,W504,E203 "$i"
-                    else
-                        flake8 --max-line-length=120 --ignore=E731,W503,W504,E203 "$i"
-                    fi
-                done
-                echo "completed!"
-            fi
+            make check-format
 
 workflows:
   version: 2.1
   build-and-test:
     jobs:
-      - run-build-tests
+      - build
       - py-linter

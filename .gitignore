@@ -14,6 +14,7 @@
 *.parquet
 *.zip
 *.txt
+*.whl
 
 # MODELS
 */models/*
