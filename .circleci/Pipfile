@@ -1,0 +1,35 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+jupyter = "==1.0.0"
+isort = "==5.6.4"
+rope = "==0.19.0"
+black = "==21.5b1"
+pytest = "==6.2.4"
+mypy = "==0.950"
+pylint = "==2.13.9"
+pycodestyle = "==2.8.0"
+
+[packages]
+cython = "==0.29.21"
+numpy = "==1.19.3"
+pillow = "==8.0.1"
+torch = {version = "==1.6.0", platform_release = "!= '5.4.83-v7l+'"}
+torchvision = {version = "==0.7.0", platform_release = "!= '5.4.83-v7l+'"}
+scikit-build = "==0.11.1"
+pip = "*"
+opencv-contrib-python = {version = "4.1.0.25", platform_release = "!= '5.4.83-v7l+'"}
+tqdm = "==4.51.0"
+python-vlc = "==3.0.11115"
+spotipy = "==2.18.0"
+facenet-pytorch = "==2.5.0"
+mmcv = "==1.2.0"
+pandas = "==1.1.5"
+scikit-learn = "==0.23.2"
+scipy = "==1.5.4"
+
+[requires]
+python_version = "3.7"
